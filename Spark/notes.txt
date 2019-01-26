@@ -1,0 +1,9 @@
+val textFile = sc.textFile("spark/file.txt")
+val counts = textFile.flatMap(line => line.split(" ")).map(word => (word, 1)).reduceByKey(_+_)
+counts.collect().foreach(println)
+
+-------------------
+val inputfile = sc.textFile("spark/changes.txt")
+val numAs = inputfile.filter(line => line.contains("a")).count()
+val numBs = inputfile.filter(line => line.contains("b")).count()
+println("Lines with a: %s, Lines with b: %s".format(numAs, numBs))

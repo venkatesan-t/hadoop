@@ -1,0 +1,35 @@
+emp = LOAD 'pig/employee_details.txt' USING PigStorage(',') AS (emp_id:int, emp_name:chararray, emp_salary:int);
+
+dump emp;
+
+filtered_emp_name = FILTER emp by emp_name matches 'A.*';
+dump filtered_emp_name;
+
+emp_salary = FOREACH emp generate emp_name, emp_salary*12;
+dump emp_salary;
+describe emp_salary;
+
+emp_annual_salary = FOREACH emp generate emp_name, emp_salary*12 as annual_salary;
+dump emp_annual_salary;
+
+emp_with_rating = LOAD 'pig/employee_details.txt' USING PigStorage(',') AS (emp_id:int, emp_name:chararray, emp_salary:int, emp_rating:int);
+dump emp_with_rating;
+
+grouped_emp_with_rating_count = foreach grouped_emp_with_rating generate group, COUNT(emp_with_rating);
+dump grouped_emp_with_rating_count;
+
+emp = LOAD 'pig/employee_details.txt' USING PigStorage(',') AS (emp_id:int, emp_name:chararray, emp_salary:int);
+emp_expenses = LOAD 'pig/employee_expenses.txt' AS (emp_id:int, expenses:int);
+
+--JOIN
+
+emp = LOAD 'pig/employee_details.txt' USING PigStorage(',') AS (emp_id:int, emp_name:chararray, emp_salary:int);
+emp_expenses = LOAD 'pig/employee_expenses.txt' AS (emp_id:int, expenses:int);
+
+joined_data = join emp by emp_id , emp_expenses by emp_id;
+dump joined_data;
+describe joined_data;
+
+left_outer_joined_data = join emp by emp_id left outer, emp_expenses by emp_id;
+dump left_outer_joined_data;
+describe left_outer_joined_data;

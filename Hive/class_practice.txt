@@ -1,0 +1,107 @@
+CREATE TABLE users_venkatesan
+(
+id INT,
+name STRING,
+salary INT,
+unit STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' ;
+
+CREATE TABLE locations_venkatesan
+(
+id INT,
+location STRING
+)
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ',' ;
+
+LOAD DATA LOCAL INPATH 'users.txt'
+INTO TABLE users_venkatesan;
+
+LOAD DATA LOCAL INPATH 'locations.txt'
+INTO TABLE locations_venkatesan;
+
+CREATE TABLE buck_users_venkatesan
+(
+id INT,
+name STRING,
+salary INT,
+unit STRING
+)
+CLUSTERED BY (id)
+SORTED BY (id)
+INTO 2 BUCKETS
+row format delimited
+fields terminated by ',';
+
+CREATE TABLE buck_locations_venkatesan
+(
+id INT,
+location STRING
+)
+CLUSTERED BY (id)
+SORTED BY (id)
+INTO 2 BUCKETS
+row format delimited
+fields terminated by ',';
+
+INSERT OVERWRITE TABLE buck_users_venkatesan
+SELECT * FROM users_venkatesan;
+
+INSERT OVERWRITE TABLE buck_locations_venkatesan
+SELECT * FROM buck_locations_venkatesan;
+
+SELECT * FROM buck_users_venkatesan u INNER JOIN buck_locations_venkatesan l
+ON u.id = l.id;
+
+SET hive.auto.convert.join=false;
+
+set hive.enforce.sortmergebucketmapjoin=false;
+set hive.auto.convert.sortmerge.join=true;
+set hive.optimize.bucketmapjoin = true;
+set hive.optimize.bucketmapjoin.sortedmerge = true;
+SET hive.auto.convert.join=false;
+
+
+create table if not exists emp_details_c_venkatesan
+(
+emp_name string,
+unit string,
+exp int,
+location string
+)
+row format delimited
+fields terminated by ',';
+
+LOAD DATA
+LOCAL INPATH 'emp_details_c'
+INTO TABLE emp_details_c_venkatesan;
+
+SELECT * FROM emp_details_c_venkatesan
+
+!hadoop fs -ls hdfs://nameservice1/user/hive/warehouse/12august.db/emp_details_venkatesan;
+
+stocks input file - https://drive.google.com/file/d/0ByJLBTmJojjzbVhvSnQwNlhXUWs/view
+
+create external table stocks_external_venkatesan
+ (date_ String,
+ Ticker String,
+ Open Double,
+ High Double,
+ Low Double, 
+ Close Double,
+ Volume_for_the_day int) 
+row format delimited fields terminated by ','
+LOCATION '/user/edureka_409125/MyAnalytics';
+
+DESCRIBE FORMATTED stocks_external_venkatesan;
+
+select ticker,date_,close,lag(close,1) over(partition by ticker order by date_) as yesterday_price from stocks_external;
+
+select ticker,first_value(high) over(partition by ticker) as HighestValue from stocks_external;
+
+select ticker,high,rank() over(partition by ticker order by high desc ) as HighestValue from stocks_external ;
+
+select * from  (select ticker,high,rank() over(partition by ticker order by high desc) as HighestValue from stocks_external) scc
+where scc.HighestValue=1;

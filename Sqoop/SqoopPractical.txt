@@ -1,0 +1,17 @@
+mysql -u labuser -h mysqldb.edu.cloudlab.com -p
+use mySQL11August
+create table persons_Edu_VENKATESAN(Id INT NOT NULL, First_name VARCHAR(50) NOT NULL, Last_name VARCHAR(50) NOT NULL, City VARCHAR(50) NOT NULL, PRIMARY KEY (Id));
+insert into persons_Edu_VENKATESAN values(89, "William", "Smith", "Seattle");
+insert into persons_Edu_VENKATESAN values(90, "Jason", "Kreza", "Miami");
+insert into persons_Edu_VENKATESAN values(91, "Michael", "Clarke", "Sydney");
+
+sqoop import --connect jdbc:mysql://sqoopdb.edu.cloudlab.com/mySQL11August --username labuser --password edureka --table persons_Edu_VENKATESAN -m 1 --target-dir 'sqoop_demo_edu_VENKATESAN_11August';
+
+insert into persons_Edu_VENKATESAN values(92, "Edureka", "Edureka", "Banglore");
+
+sqoop import --connect jdbc:mysql://sqoopdb.edu.cloudlab.com/mySQL11August --username labuser --password edureka --table persons
+_Edu_VENKATESAN -m 1 --target-dir 'sqoop_demo_edu_VENKATESAN_11August' --incremental append --check-column Id --last-value 91;
+
+create table persons_Edu_VENKATESAN_Export(Id INT NOT NULL, First_name VARCHAR(50) NOT NULL, Last_name VARCHAR(50) NOT NULL, City VARCHAR(50) NOT NULL, PRIMARY KEY (Id));
+
+sqoop export --connect jdbc:mysql://sqoopdb.edu.cloudlab.com/mySQL11August --username labuser --password edureka --table persons_Edu_VENKATESAN_Export -m 1 --export-dir 'sqoop_demo_edu_VENKATESAN_11August';

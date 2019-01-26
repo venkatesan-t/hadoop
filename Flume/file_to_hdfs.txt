@@ -1,0 +1,26 @@
+#Specify source, channel and sink
+agent1.sinks =  hdfs-sink1_1
+agent1.sources = source1_1
+agent1.channels = fileChannel1_1
+#Flume Configuration Starts
+# Define a file channel called fileChannel on agent1
+agent1.channels.fileChannel1_1.type = file
+# on linux FS
+agent1.channels.fileChannel1_1.capacity = 200000
+agent1.channels.fileChannel1_1.transactionCapacity = 1000
+# Define a source for agent1
+agent1.sources.source1_1.type = spooldir
+agent1.sources.source1_1.spoolDir = FLUMEONLOCAL
+agent1.sources.source1_1.fileHeader = false
+agent1.sources.source1_1.fileSuffix = .DONE
+agent1.sinks.hdfs-sink1_1.type = hdfs
+#Sink is /flume_import under hdfs
+agent1.sinks.hdfs-sink1_1.hdfs.path = hdfs://nameservice1/user/edureka_409125/FLUMEONHDFS
+agent1.sinks.hdfs-sink1_1.hdfs.batchSize = 1000
+agent1.sinks.hdfs-sink1_1.hdfs.rollSize = 268435456
+agent1.sinks.hdfs-sink1_1.hdfs.rollInterval = 0
+agent1.sinks.hdfs-sink1_1.hdfs.rollCount = 5
+agent1.sinks.hdfs-sink1_1.hdfs.writeFormat=Text
+agent1.sinks.hdfs-sink1_1.hdfs.fileType = DataStream
+agent1.sources.source1_1.channels = fileChannel1_1
+agent1.sinks.hdfs-sink1_1.channel = fileChannel1_1
