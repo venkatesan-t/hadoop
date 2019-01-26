@@ -1,0 +1,9 @@
+create 'customers_albtvenki','info'
+
+hdfs dfs -put custs /user/edureka_409125/HBase
+
+HADOOP_CLASSPATH=`${HBASE_HOME}/bin/hbase classpath` hadoop jar /opt/cloudera/parcels/CDH/lib/hbase/hbase-server-1.2.0-cdh5.11.1.jar importtsv -Dimporttsv.separator=, -Dimporttsv.bulk.output=output -Dimporttsv.columns=HBASE_ROW_KEY,info:id,info:fname,info:lname,info:age,info:prof customers_albtvenki HBase/custs
+
+HADOOP_CLASSPATH=`${HBASE_HOME}/bin/hbase classpath` hadoop jar /opt/cloudera/parcels/CDH/lib/hbase/hbase-server-1.2.0-cdh5.11.1.jar completebulkload output customers_albtvenki
+
+create 'testtable_albtvenki','colfam1'

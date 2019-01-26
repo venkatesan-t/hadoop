@@ -1,0 +1,2 @@
+curl "http://ip-20-0-21-196.ec2.internal:20550"
+curl "http://ip-20-0-21-196.ec2.internal:20550/version"
